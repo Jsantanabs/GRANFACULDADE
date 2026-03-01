@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador Digital de Lógica Computacional</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        padding-bottom: 140px; 
+        margin: 0;
+    }
+
+    h1 {
+        color: #38bdf8;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+        background: #1e293b;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    input {
+        padding: 8px;
+        width: 80px;
+        text-align: center;
+        font-size: 16px;
+        margin: 5px;
+        border-radius: 6px;
+        border: none;
+    }
+
+    button {
+        padding: 10px 20px;
+        background: #38bdf8;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #0ea5e9;
+    }
+
+    .bits span {
+        display: inline-block;
+        width: 40px;
+        padding: 8px;
+        margin: 2px;
+        border-radius: 6px;
+        font-weight: bold;
+    }
+
+    .bit-1 {
+        background: #22c55e;
+        color: black;
+    }
+
+    .bit-0 {
+        background: #334155;
+        color: white;
+    }
+
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #475569;
+        padding: 8px;
+    }
+
+    th {
+        background: #334155;
+    }
+
+    footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #0b1120;
+        border-top: 2px solid #38bdf8;
+        padding: 15px 10px;
+        font-size: 14px;
+        color: #cbd5e1;
+    }
+
+    footer strong {
+        color: #38bdf8;
+    }
+
+    footer a {
+        color: #38bdf8;
+        text-decoration: none;
+        margin: 0 8px;
+        font-weight: bold;
+    }
+
+    footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Simulador Digital de Lógica Computacional</h1>
+
+<div class="container">
+
+    <h2>Entradas</h2>
+    <input type="number" id="decimalA" min="0" max="15" placeholder="A">
+    <input type="number" id="decimalB" min="0" max="15" placeholder="B">
+    <br>
+    <button onclick="calcular()">Calcular</button>
+
+    <h2>Resultados</h2>
+    <div id="resultados"></div>
+
+    <h2>Tabela Verdade (1 bit)</h2>
+    <table>
+        <tr>
+            <th>A</th>
+            <th>B</th>
+            <th>AND</th>
+            <th>OR</th>
+            <th>XOR</th>
+        </tr>
+        <tbody id="tabelaVerdade"></tbody>
+    </table>
+
+</div>
+
+<footer>
+    <div>
+        Desenvolvido por <strong>José Santana</strong><br>
+        Graduando em Engenharia de Software – 2º Semestre<br>
+        Instituição: <strong>Gran Centro Universitário</strong><br><br>
+        
+        <a href="https://www.linkedin.com/in/josesantanas/" target="_blank">LinkedIn</a> |
+        <a href="https://github.com/Jsantanabs" target="_blank">GitHub</a>
+        
+        <br><br>
+        © <span id="ano"></span> José Santana – Todos os direitos reservados
+    </div>
+</footer>
+
+<script>
+
+function decimalParaBinario(num) {
+    return num.toString(2).padStart(4, '0');
+}
+
+function criarBits(binario) {
+    return binario.split('').map(bit => 
+        `<span class="${bit === '1' ? 'bit-1' : 'bit-0'}">${bit}</span>`
+    ).join('');
+}
+
+function calcular() {
+    let A = parseInt(document.getElementById("decimalA").value) || 0;
+    let B = parseInt(document.getElementById("decimalB").value) || 0;
+
+    if (A > 15 || B > 15) {
+        alert("Digite valores entre 0 e 15.");
+        return;
+    }
+
+    let binA = decimalParaBinario(A);
+    let binB = decimalParaBinario(B);
+
+    let and = "";
+    let or = "";
+    let xor = "";
+    let notA = "";
+
+    for (let i = 0; i < 4; i++) {
+        and += (binA[i] & binB[i]);
+        or += (binA[i] | binB[i]);
+        xor += (binA[i] ^ binB[i]);
+        notA += (binA[i] == 0 ? 1 : 0);
+    }
+
+    let resultadosHTML = `
+        <p><strong>A (binário):</strong> ${criarBits(binA)}</p>
+        <p><strong>B (binário):</strong> ${criarBits(binB)}</p>
+        <hr>
+        <p><strong>AND:</strong> ${criarBits(and)} = ${parseInt(and,2)}</p>
+        <p><strong>OR:</strong> ${criarBits(or)} = ${parseInt(or,2)}</p>
+        <p><strong>XOR:</strong> ${criarBits(xor)} = ${parseInt(xor,2)}</p>
+        <p><strong>NOT A:</strong> ${criarBits(notA)} = ${parseInt(notA,2)}</p>
+    `;
+
+    document.getElementById("resultados").innerHTML = resultadosHTML;
+}
+
+function gerarTabelaVerdade() {
+    let tbody = document.getElementById("tabelaVerdade");
+    let combinacoes = [
+        [0,0],
+        [0,1],
+        [1,0],
+        [1,1]
+    ];
+
+    combinacoes.forEach(([a,b]) => {
+        let linha = `
+            <tr>
+                <td>${a}</td>
+                <td>${b}</td>
+                <td>${a & b}</td>
+                <td>${a | b}</td>
+                <td>${a ^ b}</td>
+            </tr>
+        `;
+        tbody.innerHTML += linha;
+    });
+}
+
+gerarTabelaVerdade();
+
+document.getElementById("ano").textContent = new Date().getFullYear();
+
+</script>
+
+</body>
+</html>
