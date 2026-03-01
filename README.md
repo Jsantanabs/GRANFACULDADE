@@ -22,4 +22,4 @@ https://deluxe-malabi-997d2d.netlify.app/
 
 🎥 Vídeo Explicativo
 
-SEU_LINK_VIDEO
+(https://drive.google.com/file/d/1QK7QRS3ID-wKHa76tYz0ZrRaMfBPnJmR/view?usp=sharing)
